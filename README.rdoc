@@ -1,6 +1,6 @@
 = properties
 
-Description goes here.
+This gem is about defining and using properties i Ruby.
 
 == Note on Patches/Pull Requests
  
