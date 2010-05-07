@@ -1,4 +1,4 @@
-
+require 'facets'
 
 module Properties
   class Property
@@ -45,16 +45,8 @@ def property name, kind
 
     property = self.class.__properties__[name]
     
-    # Validate type
-    kind = case property.kind
-           when :string then String
-           when :integer then Integer
-           else
-             NilClass
-           end
-
-    raise Properties::PropertyError.new("Can't set value (#{value}) to property #{name} since it's not a #{kind}") if not value.kind_of?(kind)
-
+    c = eval property.kind.to_s.camelcase(true)
+    raise Properties::PropertyError.new("Can't set value (#{value}) to property #{name} since it's not a #{kind}") if not value.kind_of?(c)
     
     @__property_values__[name] = Properties::Value.new(value, self.class.__properties__[name])
   end
