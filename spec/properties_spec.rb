@@ -78,7 +78,6 @@ describe "a collection property" do
   end
 
   it "convert replacing entire collection with nil to an empty collection" do
-    pending
     @computer.audio_inputs << "line in"
     @computer.audio_inputs.size == 1
     @computer.audio_inputs = nil
@@ -91,7 +90,6 @@ describe "a collection property" do
   end
 
   it "should reject overwrite of entire collection if new collection contains elements of wrong type" do
-    pending
     lambda { @computer.audio_inputs = ["line in", 23] }.should raise_error(Properties::PropertyError)
   end
 
@@ -102,9 +100,14 @@ describe "nested complex types" do
   cleanup.after_spec
 
   before do
+    class Partition 
+     property :name, :string
+    end
+
     class Disk
      property :name, :string
      property :gigabytes, :integer
+     collection :partitions, :partition
     end
 
 
@@ -116,24 +119,34 @@ describe "nested complex types" do
     @computer = Computer.new
   end
 
-  it "should worok on collections" do
+  it "should work on collections" do
     @computer.name = "My Computer"
     @computer.disks.should == []
+    disk0 = Disk.new
+    disk0.name = "First disk"
+    disk0.gigabytes = 200
+
+    partition0 = Partition.new
+    partition0.name = "p0"
+    partition1 = Partition.new
+    partition1.name = "p1"
+
+    
     disk1 = Disk.new
-    disk1.name = "First disk"
-    disk1.gigabytes = 200
+    disk1.name = "Second disk"
+    disk1.gigabytes = 300
+    disk1.partitions = [ partition0, partition1 ]
 
-    disk2 = Disk.new
-    disk2.name = "Second disk"
-    disk2.gigabytes = 300
 
-    @computer.disks = [ disk1, disk2 ]
+    @computer.disks = [ disk0, disk1 ]
 
     @computer.name.should == "My Computer"
     @computer.disks[0].name.should == "First disk"
     @computer.disks[0].gigabytes.should == 200
     @computer.disks[1].name.should == "Second disk"
     @computer.disks[1].gigabytes.should == 300
+    
+    @computer.disks[1].partitions[0].name.should == "p0"
   end
 end
 
