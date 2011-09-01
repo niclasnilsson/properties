@@ -85,7 +85,7 @@ describe "a collection property" do
   end
   
   it "should reject appending values of wrong type" do
-    pending
+    pending "This needs to hijack the << method on the object (singleton class) or similar"
     lambda { @computer.audio_inputs << 1 }.should raise_error(Properties::PropertyError)
   end
 
